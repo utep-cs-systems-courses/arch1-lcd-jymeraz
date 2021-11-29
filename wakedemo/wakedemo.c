@@ -3,6 +3,7 @@
 #include "lcdutils.h"
 #include "lcddraw.h"
 #include "buzzer.h"
+#include "wakedemo.h"
 
 // WARNING: LCD DISPLAY USES P1.0.  Do not touch!!! 
 
@@ -95,36 +96,39 @@ void main()
     P1OUT |= LED;	/* led on */
   }
 }
-    
+
 char rowLocations[] = {0,0,0,0,0,0};
 char colLocations[] = {15,35,55,75,95,115};
-char snowFlakes = 0;
+int snowFlakes = 0;
 char pixelSize = 2;
-u_int color = COLOR_WHITE;
-char blue = 31, green = 0, red = 31;
-
+int color = COLOR_WHITE;
+int sw = 0;
+    
 void
 update_shape()
 {
-    drawString8x12(20,20, "LET IT SNOW", COLOR_BLACK, COLOR_BLUE);
+  int four = switches & SW4;
+  int one = switches & SW1;
+  int two = switches & SW2;
+  int three = switches & SW3;
 
-    if (switches & SW4) return;
+  if (one)
+    sw = 1;
+  if (two)
+    sw = 0;
+  if (three)
+    sw = 2;
+  if (four)
+    sw = 3;
 
-    for (int i = 0; i < snowFlakes; i++) {
-      drawSnowFlake(pixelSize, rowLocations[i], colLocations[i], color);
-      updateLocations();
-    }
-    
-    if (switches & SW1) {
-      snowFlakes++;
-      if (snowFlakes > 5) {
-	snowFlakes = 5;
-      }
-    }
-
-    if (switches & SW3) {
-      color = ((color+3)%64) & 63;
-    }
+  jumpTable(sw);
+  sw = 0;
+  
+  for (int i = 0; i < snowFlakes; i++) {
+    drawSnowFlake(pixelSize, rowLocations[i], colLocations[i], color);
+    updateLocations();
+    //drawString8x12(20,20, "LET IT SNOW", COLOR_BLACK, COLOR_BLUE);
+  }
 }
 
 void updateLocations()
