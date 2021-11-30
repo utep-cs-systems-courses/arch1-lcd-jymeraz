@@ -118,8 +118,10 @@ update_shape()
     sw = 0;
   if (three)
     sw = 2;
-  if (four)
+  if (four) {
     sw = 3;
+    drawString11x16(4,100, "LET IT SNO", COLOR_BLACK, COLOR_BLUE);
+  }
 
   jumpTable(sw);
   sw = 0;
@@ -127,7 +129,6 @@ update_shape()
   for (int i = 0; i < snowFlakes; i++) {
     drawSnowFlake(pixelSize, rowLocations[i], colLocations[i], color);
     updateLocations();
-    //drawString8x12(20,20, "LET IT SNOW", COLOR_BLACK, COLOR_BLUE);
   }
 }
 
